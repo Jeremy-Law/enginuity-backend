@@ -1,14 +1,21 @@
 const express = require("express");
-const pool = require("./db");  // <-- import db.js
+const pool = require("./db");
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
 
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
+
 // Root test
 app.get("/", (req, res) => {
   res.send("Enginuity backend running 🚀");
 });
+
 
 // DB test route
 app.get("/db-test", async (req, res) => {

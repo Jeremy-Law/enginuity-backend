@@ -1,19 +1,35 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
+// index.js
+const express = require("express");
+const { Pool } = require("pg");
+require("dotenv").config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Create a Postgres connection pool using env vars
+const pool = new Pool({
+  host: process.env.POSTGRES_HOST,      // should be "db" from docker-compose
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
+  port: process.env.POSTGRES_PORT || 5432,
+});
 
-// Placeholder routes
-app.get('/', (req, res) => res.send('Enginuity API running'));
+app.get("/", (req, res) => {
+  res.send("Enginuity backend running 🚀");
+});
+
+// Quick DB test route
+app.get("/db-test", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ serverTime: result.rows[0].now });
+  } catch (err) {
+    console.error("DB error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});

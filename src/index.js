@@ -32,7 +32,7 @@ app.get("/db-test", async (req, res) => {
 app.get("/users", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users");
-    res.json(result.rows);
+    res.json(result.rows); // Return array directly
   } catch (err) {
     console.error("Error fetching users:", err.message);
     res.status(500).json({ error: err.message });

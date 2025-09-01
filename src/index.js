@@ -58,3 +58,17 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
+
+
+// Test S3 upload
+const { uploadFile } = require("./s3");   // 👈 import S3 helper
+
+app.get("/upload-test", async (req, res) => {
+  try {
+    const result = await uploadFile("hello.txt", "Hello from Enginuity backend 🚀");
+    res.json({ url: result.Location });
+  } catch (err) {
+    console.error("S3 upload error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});

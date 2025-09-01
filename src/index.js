@@ -1,5 +1,5 @@
 const express = require("express");
-const pool = require("../config/db");
+const pool = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const cors = require("cors");
 require("dotenv").config();
@@ -33,7 +33,7 @@ app.get("/db-test", async (req, res) => {
 // User routes
 app.use("/users", userRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });

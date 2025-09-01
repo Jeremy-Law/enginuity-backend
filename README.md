@@ -8,5 +8,5 @@
 
 ## Setup
 1. Install dependencies: `npm install`
-2. Create `.env` (see `.env.example`)
+2. Create `.env`
 3. Run: `npm start`

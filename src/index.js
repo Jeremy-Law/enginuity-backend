@@ -39,8 +39,19 @@ app.listen(PORT, () => {
 });
 
 
-// Test S3 upload
-const { uploadFile } = require("./s3");   // 👈 import S3 helper
+
+// S3 helpers
+const { uploadFile, listFiles } = require("./s3");
+
+app.get("/files", async (req, res) => {
+  try {
+    const files = await listFiles();
+    res.json({ files });
+  } catch (err) {
+    console.error("S3 list error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.get("/upload-test", async (req, res) => {
   try {

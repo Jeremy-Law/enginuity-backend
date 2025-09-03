@@ -62,6 +62,3 @@ app.get("/upload-test", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-const listEndpoints = require('express-list-endpoints');
-console.log("📡 Registered routes:", listEndpoints(app));

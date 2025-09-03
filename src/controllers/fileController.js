@@ -17,12 +17,14 @@ async function uploadFile(key, content) {
   return s3.upload(params).promise();
 }
 
-async function listFiles() {
+async function listAllFiles() {
   const params = {
     Bucket: process.env.S3_BUCKET,
   };
   const data = await s3.listObjectsV2(params).promise();
   return data.Contents.map(obj => obj.Key);
 }
+
+
 
 module.exports = { uploadFile, listFiles };

@@ -15,3 +15,5 @@ router.put('/editProject', projectController.editProject);
 router.post('/addUserToProject', projectController.addUserToProject);
 
 router.post('/removeUserFromProject', projectController.removeUserFromProject);
+
+module.exports = router;

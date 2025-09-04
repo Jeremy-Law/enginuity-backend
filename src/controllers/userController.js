@@ -54,3 +54,37 @@ exports.createUser = async (req, res) => {
     res.status(500).json({ error: "Failed to create user" });
   }
 };
+
+exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Find user by email
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [normalizedEmail]);
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
+    const user = result.rows[0];
+
+    // Check password
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+    if (!passwordMatch) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
+    // Never return password_hash
+    delete user.password_hash;
+
+    res.json({ message: "Login successful", user });
+  } catch (err) {
+    console.error("Login error:", err.message);
+    res.status(500).json({ error: "Server error during login" });
+  }
+};

@@ -10,4 +10,8 @@ router.delete('/deleteProject', projectController.deleteProject);
 
 router.get('/getProject', projectController.getProject);
 
-router.put('/editProject', projectController.editProject)
+router.put('/editProject', projectController.editProject);
+
+router.post('/addUserToProject', projectController.addUserToProject);
+
+router.post('removeUserFromProject', projectController.removeUserFromProject);

@@ -2,15 +2,29 @@ const express = require('express');
 const router = express.Router();
 const fileController = require('../controllers/fileController');
 
-router.get('/listAllFiles', fileController.listAllFiles);
+router.post('/uploadFile', fileController.uploadFile);
 
-router.get('/listProjectFiles/:id', fileController.listProjectFiles);
+router.get('/listAllFiles', fileController.listFiles);
 
-router.get('/searchFiles', fileController.searhFiles);
+router.delete('/deleteFile', fileController.deleteFile);
 
-router.post('/uploadFile')
+router.get('/getFile', fileController.getFile);
 
-//Comment
-//Edit
-//Replace
-//Ask
+router.get('/searchFiles', fileController.searchFiles);
+
+router.post('/replaceFile', fileController.replaceFile);
+
+
+router.post('/addComment', fileController.addComment);
+
+router.put('/editComment', fileController.editComment);
+
+router.delete('/deleteComment', fileController.deleteComment);
+
+router.post('/addQuestion', fileController.addQuestion);
+
+router.post('/answerQuestion', fileController.answerQuestion);
+
+router.post('/editQuestion', fileController.editQuestion);
+
+router.post('/deleteQuestion', fileController.deleteQuestion);

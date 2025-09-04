@@ -60,6 +60,10 @@ async function addComment(key, comment) {
   return s3.putObject(params).promise();
 }
 
+async function deleteComment(key, comment) {
+  
+}
+
 async function editComment(key, newComment) {
   const params = {
     Bucket: process.env.S3_BUCKET,
@@ -95,14 +99,27 @@ async function addQuestion(key, question) {
   return s3.putObject(params).promise();
 }
 
+async function answerQuestin(key, question) {
+
+}
+
+async function editQuestion(key, question) {
+
+}
+
+async function deleteQuestion(key, question) {
+
+}
+
 module.exports = {
   uploadFile,
   listFiles,
   deleteFile,
   getFile,
   searchFiles,
+  replaceFile,
   addComment,
   editComment,
-  replaceFile,
+  deleteComment,
   addQuestion,
 };

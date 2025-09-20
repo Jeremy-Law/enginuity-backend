@@ -9,31 +9,22 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 
-app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
-
-// User routes
-app.use("/users", userRoutes);
-
-app.use("/files", fileRoutes);
-
-app.use("/projects", projectRoutes);
-
-const PORT = process.env.PORT;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
-
-
+// Routes
+app.use("/", userRoutes);      // handles /users and /auth/login
+app.use("/files", fileRoutes); // handles /files, /files/:key, etc.
+app.use("/projects", projectRoutes); // handles /projects, /projects/:id, etc.
 
 // Root test
 app.get("/", (req, res) => {
   res.send("Enginuity backend running 🚀");
 });
-
 
 // DB test route
 app.get("/db-test", async (req, res) => {
@@ -44,4 +35,9 @@ app.get("/db-test", async (req, res) => {
     console.error("DB connection error:", err.message);
     res.status(500).json({ error: err.message });
   }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });

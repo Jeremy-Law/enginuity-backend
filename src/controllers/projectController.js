@@ -1,7 +1,7 @@
 const pool = require("../../config/db");
 
-// Get all projects
-exports.getAllProjects = async (req, res) => {
+
+async function getAllProjects(req, res) {
   try {
     const result = await pool.query(
       "SELECT id, name, description, created_by, created_at FROM projects ORDER BY id ASC"
@@ -11,15 +11,11 @@ exports.getAllProjects = async (req, res) => {
     console.error("Error fetching projects:", err.message);
     res.status(500).json({ error: "Failed to fetch projects" });
   }
-};
+}
 
-// Get a single project by ID
-exports.getProject = async (req, res) => {
+async function getProject(req, res) {
   try {
-    const { id } = req.query;
-    if (!id) {
-      return res.status(400).json({ error: "Project ID is required" });
-    }
+    const { id } = req.params;
 
     const result = await pool.query(
       "SELECT id, name, description, created_by, created_at FROM projects WHERE id = $1",
@@ -35,10 +31,9 @@ exports.getProject = async (req, res) => {
     console.error("Error fetching project:", err.message);
     res.status(500).json({ error: "Failed to fetch project" });
   }
-};
+}
 
-// Create a new project
-exports.createProject = async (req, res) => {
+async function createProject(req, res) {
   try {
     const { name, description, created_by } = req.body;
 
@@ -59,18 +54,16 @@ exports.createProject = async (req, res) => {
     console.error("Error creating project:", err.message);
     res.status(500).json({ error: "Failed to create project" });
   }
-};
+}
 
-// Delete a project
-exports.deleteProject = async (req, res) => {
+async function deleteProject(req, res) {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
-    if (!id) {
-      return res.status(400).json({ error: "Project ID is required" });
-    }
-
-    const result = await pool.query("DELETE FROM projects WHERE id = $1 RETURNING id", [id]);
+    const result = await pool.query(
+      "DELETE FROM projects WHERE id = $1 RETURNING id",
+      [id]
+    );
 
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "Project not found" });
@@ -81,16 +74,12 @@ exports.deleteProject = async (req, res) => {
     console.error("Error deleting project:", err.message);
     res.status(500).json({ error: "Failed to delete project" });
   }
-};
+}
 
-// Edit a project
-exports.editProject = async (req, res) => {
+async function editProject(req, res) {
   try {
-    const { id, name, description } = req.body;
-
-    if (!id) {
-      return res.status(400).json({ error: "Project ID is required" });
-    }
+    const { id } = req.params;
+    const { name, description } = req.body;
 
     const result = await pool.query(
       "UPDATE projects SET name = COALESCE($2, name), description = COALESCE($3, description) WHERE id = $1 RETURNING id, name, description, created_by, created_at",
@@ -109,15 +98,16 @@ exports.editProject = async (req, res) => {
     console.error("Error editing project:", err.message);
     res.status(500).json({ error: "Failed to edit project" });
   }
-};
+}
 
-// Add a user to a project
-exports.addUserToProject = async (req, res) => {
+
+async function addUserToProject(req, res) {
   try {
-    const { project_id, user_id, role } = req.body;
+    const { id: project_id } = req.params;
+    const { user_id, role } = req.body;
 
-    if (!project_id || !user_id) {
-      return res.status(400).json({ error: "Project ID and User ID are required" });
+    if (!user_id) {
+      return res.status(400).json({ error: "User ID is required" });
     }
 
     const result = await pool.query(
@@ -133,16 +123,11 @@ exports.addUserToProject = async (req, res) => {
     console.error("Error adding user to project:", err.message);
     res.status(500).json({ error: "Failed to add user to project" });
   }
-};
+}
 
-// Remove a user from a project
-exports.removeUserFromProject = async (req, res) => {
+async function removeUserFromProject(req, res) {
   try {
-    const { project_id, user_id } = req.body;
-
-    if (!project_id || !user_id) {
-      return res.status(400).json({ error: "Project ID and User ID are required" });
-    }
+    const { id: project_id, userId: user_id } = req.params;
 
     const result = await pool.query(
       "DELETE FROM project_users WHERE project_id = $1 AND user_id = $2 RETURNING id",
@@ -158,4 +143,15 @@ exports.removeUserFromProject = async (req, res) => {
     console.error("Error removing user from project:", err.message);
     res.status(500).json({ error: "Failed to remove user from project" });
   }
+}
+
+
+module.exports = {
+  getAllProjects,
+  getProject,
+  createProject,
+  deleteProject,
+  editProject,
+  addUserToProject,
+  removeUserFromProject,
 };

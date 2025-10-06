@@ -116,6 +116,20 @@ async function editProject(req, res) {
   }
 }
 
+async function getProjectUsers(req, res) {
+  try {
+    const { id: project_id } = req.params;
+    const result = await pool.query(
+      "SELECT pu.user_id, u.username, pu.role, pu.created_at FROM project_users pu JOIN users u ON pu.user_id = u.id WHERE pu.project_id = $1",
+      [project_id]
+    );  
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching project users:", err.message);
+    res.status(500).json({ error: "Failed to fetch project users" });
+  }
+}
 
 async function addUserToProject(req, res) {
   try {
@@ -168,6 +182,7 @@ module.exports = {
   createProject,
   deleteProject,
   editProject,
+  getProjectUsers,
   addUserToProject,
   removeUserFromProject,
 };

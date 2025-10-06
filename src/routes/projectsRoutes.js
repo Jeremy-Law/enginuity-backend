@@ -9,7 +9,7 @@ router.get('/:id', projectController.getProject);
 router.put('/:id', projectController.editProject);
 router.delete('/:id', projectController.deleteProject);
 
-
+router.get('/:id/users', projectController.getProjectUsers);
 router.post('/:id/users', projectController.addUserToProject);
 router.delete('/:id/users/:userId', projectController.removeUserFromProject);
 

@@ -41,14 +41,30 @@ async function createProject(req, res) {
       return res.status(400).json({ error: "Project name is required" });
     }
 
-    const result = await pool.query(
-      "INSERT INTO projects (name, description, created_by) VALUES ($1, $2, $3) RETURNING id, name, description, created_by, created_at",
-      [name, description || null, created_by || null]
-    );
+    const sql = `WITH new_project AS (
+        INSERT INTO projects (name, description, created_by)
+        VALUES ($1, $2, $3)
+        RETURNING id, name, description, created_by, created_at
+      ),
+      owner_row AS (
+        INSERT INTO project_users (project_id, user_id, role)
+        SELECT id, created_by, 'owner' FROM new_project
+        RETURNING project_id, user_id, role, created_at
+      )
+      SELECT
+        p.id, p.name, p.description, p.created_by, p.created_at,
+        o.user_id AS owner_user_id, o.role AS owner_role, o.created_at AS owner_added_at
+      FROM new_project p
+      JOIN owner_row o ON o.project_id = p.id;
+      `;
+
+    const { rows } = await pool.query(sql, [name, description || null, created_by]);
+    const project = rows[0]; // atomic result including owner info
+
 
     res.status(201).json({
       message: "Project created successfully",
-      project: result.rows[0],
+      project: project,
     });
   } catch (err) {
     console.error("Error creating project:", err.message);

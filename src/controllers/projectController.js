@@ -120,7 +120,7 @@ async function getProjectUsers(req, res) {
   try {
     const { id: project_id } = req.params;
     const result = await pool.query(
-      "SELECT pu.user_id, u.name, pu.role FROM project_users pu JOIN users u ON pu.user_id = u.id WHERE pu.project_id = $1",
+      "SELECT pu.user_id, u.name, u.email, pu.role FROM project_users pu JOIN users u ON pu.user_id = u.id WHERE pu.project_id = $1",
       [project_id]
     );  
 
